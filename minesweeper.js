@@ -20,9 +20,11 @@ function startGame () {
   for (i =0; i < allCells; i++){
     board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
     }
+
   // Don't remove this function call: it makes the game work!
   lib.initBoard()
 }
+
 
 // Define this function to look for a win condition:
 //
@@ -47,9 +49,10 @@ function countSurroundingMines (cell) {
 var surrounding = lib.getSurroundingCells(cell.row, cell.col);
 var count = 0;
 console.log(surrounding);
-/*for (y = 0; y < surrounding.length; y++){
+for (y = 0; y < surrounding.length; y++){
   if (surrounding[y].isMine) {
-    return count++;
-  };
-}*/
+    count++;
+  }
+}
+  return count;
 }
