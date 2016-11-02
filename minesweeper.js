@@ -24,9 +24,9 @@ function generateBoard(col, row){ //define the number of col and row
 //     {col: 2, row: 2, isMine: true, hidden: true}
 //   ]
 // };
+var board = new generateBoard(1,1);
 
 function startGame () {
-  var board = new generateBoard(1,1);
   var allCells = board.cells.length;
   document.addEventListener("click", checkForWin);
   document.addEventListener("contextmenu", checkForWin);
@@ -74,7 +74,6 @@ function checkForWin () {
 function countSurroundingMines (cell) {
   var surrounding = lib.getSurroundingCells(cell.row, cell.col);
   var count = 0;
-  console.log(surrounding);
   for (var y = 0; y < surrounding.length; y++){
     if (surrounding[y].isMine){
     count++;
