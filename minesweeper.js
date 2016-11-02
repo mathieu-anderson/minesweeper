@@ -2,10 +2,11 @@ document.addEventListener('DOMContentLoaded', startGame)
 
 function generateBoard(col, row){ //define the number of col and row
     this.cells = [];     // create the cells property : an array
-    for (var c = 0; c<=col; c++){ // outer loop : the number of columns
-      for (var r = 0; r<=row; r++){ // inner loop : the number of rows
-        if (this.cells.length <= (c+1)*(r+1)){ // condition for the loops to repeat the appropriate number of time to get the right sized board
-         this.cells.push({col: c, row: r, isMine: true, isMarked: false, hidden: true}); // push the cells to the cells array
+    for (var c = 0; c<col; c++){ // outer loop : the number of columns
+      for (var r = 0; r<row; r++){ // inner loop : the number of rows
+        if (this.cells.length < col*row){ // condition for the loops to repeat the appropriate number of time to get the right sized board
+         var random_boolean = Math.random() >= 0.5; // define a random true or false value
+         this.cells.push({col: c, row: r, isMine: random_boolean, isMarked: false, hidden: true}); // push the cells to the cells array
         }
       }
     }
@@ -24,7 +25,8 @@ function generateBoard(col, row){ //define the number of col and row
 //     {col: 2, row: 2, isMine: true, hidden: true}
 //   ]
 // };
-var board = new generateBoard(1,1);
+var board = new generateBoard(4,4);
+console.log(board);
 
 function startGame () {
   var allCells = board.cells.length;
