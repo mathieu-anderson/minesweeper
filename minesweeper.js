@@ -1,69 +1,79 @@
-document.addEventListener('DOMContentLoaded', startGame)
+document.addEventListener('DOMContentLoaded', startGame);
+
 
 function generateBoard(col, row){ //define the number of col and row
     this.cells = [];     // create the cells property : an array
     for (var c = 0; c<col; c++){ // outer loop : the number of columns
       for (var r = 0; r<row; r++){ // inner loop : the number of rows
         if (this.cells.length < col*row){ // condition for the loops to repeat the appropriate number of time to get the right sized board
-         var random_boolean = Math.random() >= 0.5; // define a random true or false value
+         var random_boolean = Math.random() >= 0.7; // define a random true or false value
          this.cells.push({col: c, row: r, isMine: random_boolean, isMarked: false, hidden: true}); // push the cells to the cells array
         }
       }
     }
 }
-// Define your `board` object here!
-// var board = {
-//   cells: [
-//     {col: 0, row: 0, isMine: true, hidden: true},
-//     {col: 1, row: 0, isMine: false, hidden: true},
-//     {col: 2, row: 0, isMine: false, hidden: true},
-//     {col: 0, row: 1, isMine: false, hidden: true},
-//     {col: 1, row: 1, isMine: true, hidden: true},
-//     {col: 2, row: 1, isMine: false, hidden: true},
-//     {col: 0, row: 2, isMine: false, hidden: true},
-//     {col: 1, row: 2, isMine: false, hidden: true},
-//     {col: 2, row: 2, isMine: true, hidden: true}
-//   ]
-// };
-var board = new generateBoard(4,4);
-console.log(board);
 
-function startGame () {
+function randomIntFromInterval(min,max){
+    return Math.floor(Math.random()*(max-min+1)+min);
+} // random integer generator between two values
+
+var randomBoard = randomIntFromInterval(2, 6); // define the interval for the board
+
+var board = new generateBoard(randomBoard, randomBoard); // random board generation
+
+// Below : function calling the the sounds to be played
+
+function soundMarked(){
+  var audioFlag = document.getElementById("flag");
+  audioFlag.play();}
+
+function soundBoom(){
+  var audioBoom = document.getElementById("boom");
+  audioBoom.play();}
+
+function soundPop(){
+  var audioPop = document.getElementById("pop");
+  audioPop.play();}
+
+
+function startGame () { // function creating the board and supporting the other functions of the game
   var allCells = board.cells.length;
   document.addEventListener("click", checkForWin);
   document.addEventListener("contextmenu", checkForWin);
+  document.addEventListener("contextmenu", soundMarked);
   for (var i =0; i < allCells; i++){
     board.cells[i].surroundingMines = countSurroundingMines(board.cells[i]);
   }
+  lib.initBoard();  // Don't remove this function call: it makes the game work!
 
-  // Don't remove this function call: it makes the game work!
-  lib.initBoard();
+  var mines = document.querySelectorAll("div.mine"); // get all the mines in an array
+  for (var m =0; m < mines.length; m++){
+  mines[m].addEventListener("click", soundBoom);} // add the event listener to each div in the array
+
+  var pop = document.querySelectorAll("div.hidden:not(.mine)"); // get all the hidden divs EXCEPT mines
+  for (var p =0; p < pop.length; p++){
+  pop[p].addEventListener("click", soundPop);}  // add the event listener to each div in the array
+
 }
 
-
-// Define this function to look for a win condition:
-//
-// 1. Are all of the cells that are NOT mines visible?
-// 2. Are all of the mines marked?
 function checkForWin () {
-  var allCells = board.cells.length;
-  for (var i =0; i < allCells; i++){
-    if (board.cells[i].isMine && !board.cells[i].hidden) {
+  var allCells = board.cells.length; // get the number of cells as an integer
+  for (var i =0; i < allCells; i++){ // loop through the cells
+    if (board.cells[i].isMine && !board.cells[i].hidden) { // lose condition : click a mine
       return;
     }
-    else if (board.cells[i].isMine && !board.cells[i].isMarked){
+    else if (board.cells[i].isMine && !board.cells[i].isMarked){ // lose condition : unmarked mine
       return;
     }
-    else if (!board.cells[i].isMine && board.cells[i].hidden) {
+    else if (!board.cells[i].isMine && board.cells[i].hidden) { //lose condition : not all safe cells are unhidden
       return;
     }
     }
-  lib.displayMessage('You win!');
-
-  // You can use this function call to declare a winner (once you've
-  // detected that they've won, that is!)
-
+  lib.displayMessage('You win!'); // no lose condition reset the loop : win condition
+  var audioWin = document.getElementById("win"); // play the win sound after win conditioin
+  audioWin.play();
 }
+
 
 // Define this function to count the number of mines around the cell
 // (there could be as many as 8). You don't have to get the surrounding
@@ -82,4 +92,5 @@ function countSurroundingMines (cell) {
     }
 }
   return count;
+
 }
